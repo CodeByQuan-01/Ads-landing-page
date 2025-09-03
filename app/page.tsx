@@ -10,7 +10,10 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { subscribeToWhatsAppLink } from "@/lib/whatsapp-service";
+import {
+  subscribeToWhatsAppLink,
+  trackWhatsAppClick,
+} from "@/lib/whatsapp-service";
 
 export default function Home() {
   const [whatsappLink, setWhatsappLink] = useState("https://wa.me/1234567890");
@@ -49,7 +52,10 @@ export default function Home() {
     },
   ];
 
-  const handleWhatsAppClick = () => {
+  const handleWhatsAppClick = async () => {
+    // Track the click in Firebase
+    await trackWhatsAppClick();
+    // Open WhatsApp link
     window.open(whatsappLink, "_blank");
   };
 
@@ -136,7 +142,7 @@ export default function Home() {
             Join the Freelance Revolution Now!
           </Button>
           <p className="text-[#252525cc] text-lg lg:text-xl text-pretty">
-            Free, instant access—don't miss out on your path to freelancing
+            Free, instant access—don&apos;t miss out on your path to freelancing
             freedom!
           </p>
         </div>

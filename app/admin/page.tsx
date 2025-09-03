@@ -14,11 +14,23 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Eye, EyeOff, Save, ArrowLeft, Loader2 } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Save,
+  ArrowLeft,
+  Loader2,
+  BarChart3,
+  Users,
+  Calendar,
+  TrendingUp,
+} from "lucide-react";
 import {
   getWhatsAppLink,
   updateWhatsAppLink,
   isValidWhatsAppLink,
+  subscribeToClickAnalytics,
+  type ClickAnalytics,
 } from "@/lib/whatsapp-service";
 
 export default function AdminDashboard() {
@@ -32,16 +44,23 @@ export default function AdminDashboard() {
   );
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [analytics, setAnalytics] = useState<ClickAnalytics>({
+    totalClicks: 0,
+    lastClickedAt: new Date(),
+    clicksToday: 0,
+    clicksThisWeek: 0,
+    clicksThisMonth: 0,
+  });
+  const [analyticsLoading, setAnalyticsLoading] = useState(true);
 
-  // Hard-coded password
   const ADMIN_PASSWORD = "admin123";
 
   useEffect(() => {
-    // Check if already authenticated
     const authStatus = sessionStorage.getItem("adminAuthenticated");
     if (authStatus === "true") {
       setIsAuthenticated(true);
       loadWhatsAppLink();
+      loadAnalytics();
     }
   }, []);
 
@@ -59,12 +78,23 @@ export default function AdminDashboard() {
     }
   };
 
+  const loadAnalytics = () => {
+    setAnalyticsLoading(true);
+    const unsubscribe = subscribeToClickAnalytics((data) => {
+      setAnalytics(data);
+      setAnalyticsLoading(false);
+    });
+
+    return unsubscribe;
+  };
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
       sessionStorage.setItem("adminAuthenticated", "true");
       loadWhatsAppLink();
+      loadAnalytics();
       setMessage("");
     } else {
       setMessage("Invalid password. Please try again.");
@@ -79,7 +109,6 @@ export default function AdminDashboard() {
       return;
     }
 
-    // Validate WhatsApp link format using Firebase service
     if (!isValidWhatsAppLink(whatsappLink)) {
       setMessage(
         "Please enter a valid WhatsApp link (e.g., https://wa.me/1234567890)"
@@ -109,7 +138,6 @@ export default function AdminDashboard() {
       setSaving(false);
     }
 
-    // Clear message after 5 seconds
     setTimeout(() => setMessage(""), 5000);
   };
 
@@ -189,24 +217,103 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-          <div className="flex gap-2">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+            Admin Dashboard
+          </h1>
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
             <Button
               variant="outline"
               onClick={() => (window.location.href = "/")}
+              className="w-full sm:w-auto"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back to Website
             </Button>
-            <Button variant="outline" onClick={handleLogout}>
+            <Button
+              variant="outline"
+              onClick={handleLogout}
+              className="w-full sm:w-auto bg-transparent"
+            >
               Logout
             </Button>
           </div>
         </div>
 
-        <div className="grid gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Total Clicks
+              </CardTitle>
+              <BarChart3 className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {analyticsLoading ? (
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                ) : (
+                  analytics.totalClicks.toLocaleString()
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">All time clicks</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Today</CardTitle>
+              <Calendar className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {analyticsLoading ? (
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                ) : (
+                  analytics.clicksToday.toLocaleString()
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">Clicks today</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">This Week</CardTitle>
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {analyticsLoading ? (
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                ) : (
+                  analytics.clicksThisWeek.toLocaleString()
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">Clicks this week</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">This Month</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {analyticsLoading ? (
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                ) : (
+                  analytics.clicksThisMonth.toLocaleString()
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">Clicks this month</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card>
             <CardHeader>
               <CardTitle>WhatsApp Configuration</CardTitle>
@@ -224,7 +331,7 @@ export default function AdminDashboard() {
                   value={whatsappLink}
                   onChange={(e) => setWhatsappLink(e.target.value)}
                   placeholder="https://wa.me/1234567890"
-                  className="font-mono"
+                  className="font-mono text-sm"
                   disabled={loading || saving}
                 />
                 <p className="text-sm text-gray-600">
@@ -243,7 +350,7 @@ export default function AdminDashboard() {
 
               <Button
                 onClick={handleSaveWhatsAppLink}
-                className="w-full sm:w-auto"
+                className="w-full"
                 disabled={loading || saving}
               >
                 {saving ? (
@@ -264,8 +371,11 @@ export default function AdminDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Current Configuration</CardTitle>
+              <CardDescription>
+                Active WhatsApp link and last activity information
+              </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label>Active WhatsApp Link:</Label>
                 <div className="p-3 bg-gray-100 rounded-md font-mono text-sm break-all">
@@ -276,6 +386,22 @@ export default function AdminDashboard() {
                     </div>
                   ) : (
                     whatsappLink || "No link configured"
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Last Click:</Label>
+                <div className="p-3 bg-gray-100 rounded-md text-sm">
+                  {analyticsLoading ? (
+                    <div className="flex items-center">
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Loading...
+                    </div>
+                  ) : analytics.totalClicks > 0 ? (
+                    new Date(analytics.lastClickedAt).toLocaleString()
+                  ) : (
+                    "No clicks yet"
                   )}
                 </div>
               </div>
