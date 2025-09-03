@@ -93,14 +93,8 @@ export function subscribeToWhatsAppLink(
 }
 
 export function isValidWhatsAppLink(link: string): boolean {
-  const whatsappPatterns = [
-    /^https:\/\/wa\.me\/\d+(\?text=.*)?$/, // wa.me format
-    /^https:\/\/api\.whatsapp\.com\/send\?phone=\d+(&text=.*)?$/, // api.whatsapp.com format
-    /^https:\/\/web\.whatsapp\.com\/send\?phone=\d+(&text=.*)?$/, // web.whatsapp.com format
-    /^https:\/\/chat\.whatsapp\.com\/.*$/, // Group chat links
-  ];
-
-  return whatsappPatterns.some((pattern) => pattern.test(link));
+  // Accept any non-empty string - allows URLs, phone numbers, or any text
+  return link.trim().length > 0;
 }
 
 export function normalizeWhatsAppLink(link: string): string {
