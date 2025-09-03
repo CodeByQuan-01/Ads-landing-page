@@ -101,17 +101,6 @@ export default function Home() {
             </div>
           </CardContent>
         </Card>
-
-        <div className="fixed bottom-4 right-4 z-10">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => (window.location.href = "/admin")}
-            className="text-gray-400 hover:text-gray-600 text-xs bg-white/80 backdrop-blur-sm"
-          >
-            Admin
-          </Button>
-        </div>
       </div>
     </div>
   );
