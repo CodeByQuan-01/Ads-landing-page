@@ -14,7 +14,12 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Eye, EyeOff, Save, ArrowLeft } from "lucide-react";
+import { Eye, EyeOff, Save, ArrowLeft, Loader2 } from "lucide-react";
+import {
+  getWhatsAppLink,
+  updateWhatsAppLink,
+  isValidWhatsAppLink,
+} from "@/lib/whatsapp-service";
 
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -25,6 +30,8 @@ export default function AdminDashboard() {
   const [messageType, setMessageType] = useState<"success" | "error">(
     "success"
   );
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   // Hard-coded password
   const ADMIN_PASSWORD = "admin123";
@@ -38,10 +45,18 @@ export default function AdminDashboard() {
     }
   }, []);
 
-  const loadWhatsAppLink = () => {
-    const savedLink =
-      localStorage.getItem("whatsappLink") || "https://wa.me/1234567890";
-    setWhatsappLink(savedLink);
+  const loadWhatsAppLink = async () => {
+    setLoading(true);
+    try {
+      const link = await getWhatsAppLink();
+      setWhatsappLink(link);
+    } catch (error) {
+      console.error("Error loading WhatsApp link:", error);
+      setMessage("Failed to load WhatsApp link. Please try again.");
+      setMessageType("error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleLogin = (e: React.FormEvent) => {
@@ -57,18 +72,15 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleSaveWhatsAppLink = () => {
+  const handleSaveWhatsAppLink = async () => {
     if (!whatsappLink.trim()) {
       setMessage("Please enter a valid WhatsApp link.");
       setMessageType("error");
       return;
     }
 
-    // Validate WhatsApp link format
-    if (
-      !whatsappLink.includes("wa.me/") &&
-      !whatsappLink.includes("whatsapp.com/")
-    ) {
+    // Validate WhatsApp link format using Firebase service
+    if (!isValidWhatsAppLink(whatsappLink)) {
       setMessage(
         "Please enter a valid WhatsApp link (e.g., https://wa.me/1234567890)"
       );
@@ -76,12 +88,29 @@ export default function AdminDashboard() {
       return;
     }
 
-    localStorage.setItem("whatsappLink", whatsappLink);
-    setMessage("WhatsApp link updated successfully!");
-    setMessageType("success");
+    setSaving(true);
+    try {
+      const success = await updateWhatsAppLink(whatsappLink);
 
-    // Clear message after 3 seconds
-    setTimeout(() => setMessage(""), 3000);
+      if (success) {
+        setMessage(
+          "WhatsApp link updated successfully! Changes are now live for all users."
+        );
+        setMessageType("success");
+      } else {
+        setMessage("Failed to update WhatsApp link. Please try again.");
+        setMessageType("error");
+      }
+    } catch (error) {
+      console.error("Error saving WhatsApp link:", error);
+      setMessage("An error occurred while saving. Please try again.");
+      setMessageType("error");
+    } finally {
+      setSaving(false);
+    }
+
+    // Clear message after 5 seconds
+    setTimeout(() => setMessage(""), 5000);
   };
 
   const handleLogout = () => {
@@ -182,7 +211,8 @@ export default function AdminDashboard() {
             <CardHeader>
               <CardTitle>WhatsApp Configuration</CardTitle>
               <CardDescription>
-                Manage the WhatsApp contact link that appears on your website
+                Manage the WhatsApp contact link that appears on your website.
+                Changes are saved globally and visible to all users instantly.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -195,10 +225,11 @@ export default function AdminDashboard() {
                   onChange={(e) => setWhatsappLink(e.target.value)}
                   placeholder="https://wa.me/1234567890"
                   className="font-mono"
+                  disabled={loading || saving}
                 />
                 <p className="text-sm text-gray-600">
-                  Format: https://wa.me/[phone_number] or
-                  https://whatsapp.com/send?phone=[phone_number]
+                  Format: https://wa.me/[phone_number] (e.g.,
+                  https://wa.me/1234567890)
                 </p>
               </div>
 
@@ -213,9 +244,19 @@ export default function AdminDashboard() {
               <Button
                 onClick={handleSaveWhatsAppLink}
                 className="w-full sm:w-auto"
+                disabled={loading || saving}
               >
-                <Save className="w-4 h-4 mr-2" />
-                Save WhatsApp Link
+                {saving ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-4 h-4 mr-2" />
+                    Save WhatsApp Link
+                  </>
+                )}
               </Button>
             </CardContent>
           </Card>
@@ -228,7 +269,14 @@ export default function AdminDashboard() {
               <div className="space-y-2">
                 <Label>Active WhatsApp Link:</Label>
                 <div className="p-3 bg-gray-100 rounded-md font-mono text-sm break-all">
-                  {whatsappLink || "No link configured"}
+                  {loading ? (
+                    <div className="flex items-center">
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Loading...
+                    </div>
+                  ) : (
+                    whatsappLink || "No link configured"
+                  )}
                 </div>
               </div>
             </CardContent>
