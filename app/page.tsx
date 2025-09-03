@@ -39,63 +39,61 @@ export default function Home() {
   };
 
   return (
-    <div className="bg-white grid justify-items-center [align-items:start] w-screen">
-      <div className="bg-white w-[1440px] h-[1024px] relative">
-        <div className="inline-flex flex-col items-start gap-8 absolute top-36 left-[65px]">
-          <h1 className="relative w-[637px] mt-[-1.00px] [font-family:'Avenir-Heavy',Helvetica] font-normal text-[#252525] text-7xl tracking-[0] leading-[88px]">
-            New designs
-            <br />
-            New inspirations
-          </h1>
+    <div className="bg-white min-h-screen w-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-16">
+        <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16 mb-16 lg:mb-24">
+          <div className="flex-1 text-center lg:text-left">
+            <h1 className="font-bold text-[#252525] text-4xl sm:text-5xl lg:text-7xl leading-tight mb-6 lg:mb-8">
+              New designs
+              <br />
+              New inspirations
+            </h1>
 
-          <p className="relative w-[586px] [font-family:'Avenir-Roman',Helvetica] font-normal text-[#252525cc] text-[26px] tracking-[0] leading-[normal]">
-            Transform your ideas into stunning visual experiences. Our creative
-            team delivers exceptional designs that make your brand stand out in
-            today&apos;s competitive market.
-          </p>
+            <p className="text-[#252525cc] text-lg sm:text-xl lg:text-2xl leading-relaxed mb-8 lg:mb-10 max-w-2xl mx-auto lg:mx-0">
+              Transform your ideas into stunning visual experiences. Our
+              creative team delivers exceptional designs that make your brand
+              stand out in today&apos;s competitive market.
+            </p>
 
-          <div className="flex gap-4">
-            <Button className="inline-flex items-start gap-2.5 px-12 py-6 relative flex-[0_0_auto] bg-[#252525] rounded-[36px] overflow-hidden h-auto hover:bg-[#252525]/90">
-              <span className="relative w-fit mt-[-1.00px] [font-family:'Poppins',Helvetica] font-normal text-white text-2xl tracking-[0] leading-[18px] whitespace-nowrap">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <Button className="px-8 sm:px-12 py-4 sm:py-6 bg-[#252525] rounded-[36px] hover:bg-[#252525]/90 text-lg sm:text-xl lg:text-2xl">
                 Explore
-              </span>
-            </Button>
+              </Button>
 
-            <Button
-              onClick={handleWhatsAppClick}
-              className="inline-flex items-center gap-3 px-12 py-6 relative flex-[0_0_auto] bg-[#25D366] rounded-[36px] overflow-hidden h-auto hover:bg-[#25D366]/90"
-            >
-              <MessageCircle className="w-6 h-6 text-white" />
-              <span className="relative w-fit mt-[-1.00px] [font-family:'Poppins',Helvetica] font-normal text-white text-2xl tracking-[0] leading-[18px] whitespace-nowrap">
+              <Button
+                onClick={handleWhatsAppClick}
+                className="flex items-center gap-3 px-8 sm:px-12 py-4 sm:py-6 bg-[#25D366] rounded-[36px] hover:bg-[#25D366]/90 text-lg sm:text-xl lg:text-2xl"
+              >
+                <MessageCircle className="w-5 h-5 sm:w-6 sm:h-6" />
                 Contact Us
-              </span>
-            </Button>
+              </Button>
+            </div>
+          </div>
+
+          <div className="flex-1 w-full max-w-md lg:max-w-none">
+            <img
+              className="w-full h-auto rounded-lg shadow-lg"
+              alt="Creative Design Showcase"
+              src="/modern-design-showcase-with-creative-elements.jpg"
+            />
           </div>
         </div>
 
-        <img
-          className="absolute w-[548px] h-[519px] top-[92px] left-[828px]"
-          alt="Creative Design Showcase"
-          src="/modern-design-showcase-with-creative-elements.jpg"
-        />
-
-        <Card className="absolute top-[667px] left-16 bg-[#252525] rounded-[40px] border-none">
-          <CardContent className="inline-flex flex-col items-start gap-2 p-16">
-            <div className="gap-[118px] inline-flex items-start relative flex-[0_0_auto]">
+        <Card className="bg-[#252525] rounded-[40px] border-none">
+          <CardContent className="p-8 sm:p-12 lg:p-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
               {featureCards.map((card, index) => (
                 <div
                   key={index}
-                  className="inline-flex flex-col items-start gap-6 relative flex-[0_0_auto]"
+                  className="flex flex-col items-start gap-4 lg:gap-6"
                 >
-                  <div className="flex-col gap-3 inline-flex items-start relative flex-[0_0_auto]">
-                    <CloudIcon className="relative w-6 h-6 text-white" />
-
-                    <h3 className="relative w-[316px] [font-family:'Avenir-Heavy',Helvetica] font-normal text-[#ffffffcc] text-[32px] tracking-[0] leading-[normal]">
+                  <div className="flex flex-col items-start gap-3">
+                    <CloudIcon className="w-6 h-6 text-white" />
+                    <h3 className="text-[#ffffffcc] text-xl sm:text-2xl lg:text-3xl font-bold leading-tight">
                       {card.title}
                     </h3>
                   </div>
-
-                  <p className="relative w-[316px] [font-family:'Avenir-Book',Helvetica] font-normal text-white text-2xl tracking-[0] leading-[normal]">
+                  <p className="text-white text-base sm:text-lg lg:text-xl leading-relaxed">
                     {card.description}
                   </p>
                 </div>
@@ -104,13 +102,12 @@ export default function Home() {
           </CardContent>
         </Card>
 
-        {/* Admin Access Link */}
-        <div className="absolute bottom-4 right-4">
+        <div className="fixed bottom-4 right-4 z-10">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => (window.location.href = "/admin")}
-            className="text-gray-400 hover:text-gray-600 text-xs"
+            className="text-gray-400 hover:text-gray-600 text-xs bg-white/80 backdrop-blur-sm"
           >
             Admin
           </Button>
