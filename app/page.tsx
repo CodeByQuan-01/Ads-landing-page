@@ -51,7 +51,7 @@ export default function Home() {
           <p className="relative w-[586px] [font-family:'Avenir-Roman',Helvetica] font-normal text-[#252525cc] text-[26px] tracking-[0] leading-[normal]">
             Transform your ideas into stunning visual experiences. Our creative
             team delivers exceptional designs that make your brand stand out in
-            today's competitive market.
+            today&apos;s competitive market.
           </p>
 
           <div className="flex gap-4">
