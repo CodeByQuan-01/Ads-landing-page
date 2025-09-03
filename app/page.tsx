@@ -1,103 +1,121 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from "react";
+import { CloudIcon, MessageCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [whatsappLink, setWhatsappLink] = useState("https://wa.me/1234567890");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    // Load WhatsApp link from localStorage
+    const savedLink = localStorage.getItem("whatsappLink");
+    if (savedLink) {
+      setWhatsappLink(savedLink);
+    }
+  }, []);
+
+  const featureCards = [
+    {
+      title: "Creative Solutions",
+      description:
+        "Innovative designs that capture your brand's essence and engage your audience.",
+    },
+    {
+      title: "Expert Team",
+      description:
+        "Professional designers with years of experience in creating stunning visuals.",
+    },
+    {
+      title: "Fast Delivery",
+      description:
+        "Quick turnaround times without compromising on quality and attention to detail.",
+    },
+  ];
+
+  const handleWhatsAppClick = () => {
+    window.open(whatsappLink, "_blank");
+  };
+
+  return (
+    <div className="bg-white grid justify-items-center [align-items:start] w-screen">
+      <div className="bg-white w-[1440px] h-[1024px] relative">
+        <div className="inline-flex flex-col items-start gap-8 absolute top-36 left-[65px]">
+          <h1 className="relative w-[637px] mt-[-1.00px] [font-family:'Avenir-Heavy',Helvetica] font-normal text-[#252525] text-7xl tracking-[0] leading-[88px]">
+            New designs
+            <br />
+            New inspirations
+          </h1>
+
+          <p className="relative w-[586px] [font-family:'Avenir-Roman',Helvetica] font-normal text-[#252525cc] text-[26px] tracking-[0] leading-[normal]">
+            Transform your ideas into stunning visual experiences. Our creative
+            team delivers exceptional designs that make your brand stand out in
+            today's competitive market.
+          </p>
+
+          <div className="flex gap-4">
+            <Button className="inline-flex items-start gap-2.5 px-12 py-6 relative flex-[0_0_auto] bg-[#252525] rounded-[36px] overflow-hidden h-auto hover:bg-[#252525]/90">
+              <span className="relative w-fit mt-[-1.00px] [font-family:'Poppins',Helvetica] font-normal text-white text-2xl tracking-[0] leading-[18px] whitespace-nowrap">
+                Explore
+              </span>
+            </Button>
+
+            <Button
+              onClick={handleWhatsAppClick}
+              className="inline-flex items-center gap-3 px-12 py-6 relative flex-[0_0_auto] bg-[#25D366] rounded-[36px] overflow-hidden h-auto hover:bg-[#25D366]/90"
+            >
+              <MessageCircle className="w-6 h-6 text-white" />
+              <span className="relative w-fit mt-[-1.00px] [font-family:'Poppins',Helvetica] font-normal text-white text-2xl tracking-[0] leading-[18px] whitespace-nowrap">
+                Contact Us
+              </span>
+            </Button>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        <img
+          className="absolute w-[548px] h-[519px] top-[92px] left-[828px]"
+          alt="Creative Design Showcase"
+          src="/modern-design-showcase-with-creative-elements.jpg"
+        />
+
+        <Card className="absolute top-[667px] left-16 bg-[#252525] rounded-[40px] border-none">
+          <CardContent className="inline-flex flex-col items-start gap-2 p-16">
+            <div className="gap-[118px] inline-flex items-start relative flex-[0_0_auto]">
+              {featureCards.map((card, index) => (
+                <div
+                  key={index}
+                  className="inline-flex flex-col items-start gap-6 relative flex-[0_0_auto]"
+                >
+                  <div className="flex-col gap-3 inline-flex items-start relative flex-[0_0_auto]">
+                    <CloudIcon className="relative w-6 h-6 text-white" />
+
+                    <h3 className="relative w-[316px] [font-family:'Avenir-Heavy',Helvetica] font-normal text-[#ffffffcc] text-[32px] tracking-[0] leading-[normal]">
+                      {card.title}
+                    </h3>
+                  </div>
+
+                  <p className="relative w-[316px] [font-family:'Avenir-Book',Helvetica] font-normal text-white text-2xl tracking-[0] leading-[normal]">
+                    {card.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Admin Access Link */}
+        <div className="absolute bottom-4 right-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => (window.location.href = "/admin")}
+            className="text-gray-400 hover:text-gray-600 text-xs"
+          >
+            Admin
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
