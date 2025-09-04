@@ -147,7 +147,8 @@ export async function trackWhatsAppClick(): Promise<boolean> {
 
     if (docSnap.exists()) {
       const data = docSnap.data() as ClickAnalytics;
-      const lastClick = data.lastClickedAt?.toDate?.() || new Date(0);
+      const lastClick =
+        data.lastClickedAt instanceof Date ? data.lastClickedAt : new Date(0);
 
       // Check if it's a new day, week, or month
       const isNewDay = now.toDateString() !== lastClick.toDateString();
