@@ -97,7 +97,7 @@ export default function Home() {
             <img
               className="w-full h-auto rounded-lg shadow-lg"
               alt="Freelancing Success Showcase"
-              src="/modern-design-showcase-with-creative-elements.jpg"
+              src="/portrait-cheerful-happy-african-man.jpg"
             />
           </div>
         </div>
